@@ -2,30 +2,36 @@ const $pokemonsList = document.querySelector('.pokemonsList');
 const url = 'http://pokeapi.co/api/v2/pokemon/';
 
 
-function validateHTTPSStatus(response){
+fetch(url)
+    .then(validandoHTTPSStatus)
+    .then((response) => {
+        percorrendoListaPokemon(response.results)
+    })
+    .catch(error => {
+        console.log(error.message);
+    });
+
+
+
+
+function validandoHTTPSStatus(response){
     if(!response.ok){
-        throw new Error(`HTTP error, status ${dogData.status}` );
+        throw new Error(`HTTP error, status ${response.status}` );
     }
 
     return response.json();
 }
 
-fetch(url)
-    .then(validateHTTPSStatus)
-    .then(({results}) => {
-        results.forEach(({name, url}) => {
-            accessingPokemonDetails(name, url);
-        })
+
+function percorrendoListaPokemon(lista){
+    lista.forEach(({name, url}) => {
+        acessandoDetalhesDoPokemon(name, url);
     })
-    .catch(error => {
-        console.log(error.message);
-    })
+}
 
-
-
-function  accessingPokemonDetails(name, url){
+function  acessandoDetalhesDoPokemon(name, url){
     fetch(url)
-        .then(validateHTTPSStatus)
+        .then(validandoHTTPSStatus)
         .then((result) => {
             createPokemonIntoDom(name, result.sprites.front_default, result.id)
         })
@@ -36,7 +42,7 @@ function createPokemonIntoDom(name, image, id){
                             <p class="idPokemon">${id}</p>
                             <img class="imgPokemon" src="${image}" width="100" alt="">
                             <p class="nomePokemon">${name}</p>
-                        </div>`
+                        </div>`;
 
     $pokemonsList.innerHTML += pokemonItem;
 }
