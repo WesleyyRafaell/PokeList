@@ -57,3 +57,27 @@ body{
 .pokemonItem .idPokemon{
     font-weight: 600;
 }
+
+/* spinner loader*/
+.containerSpiner{
+    display: flex;
+    justify-content: center;
+}
+
+.containerSpiner img{
+    opacity: 0;
+    width: 221.8px;
+    padding-left: 30px;
+    transition: all 0.3s linear;
+}
+
+.containerSpiner .spinnerActive{
+    opacity: 1;
+}
+
+
+@media screen and (max-width: 503px){
+    .pokemonsList{
+        justify-content: center;
+    }
+}

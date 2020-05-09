@@ -1,8 +1,16 @@
 const $pokemonsList = document.querySelector('.pokemonsList');
-const url = 'http://pokeapi.co/api/v2/pokemon/';
+const $imgSpinner = document.querySelector('#imgSpinner');
+let page = 0;
 
 
-fetch(url)
+
+function iniciar(){
+    trazendoListagemPokemonAPi();
+    calculandoFimDaPagina();
+}
+
+function trazendoListagemPokemonAPi(){
+    fetch(`https://pokeapi.co/api/v2/pokemon/?offset=${page}&limit=10`)
     .then(validandoHTTPSStatus)
     .then((response) => {
         percorrendoListaPokemon(response.results)
@@ -10,7 +18,7 @@ fetch(url)
     .catch(error => {
         console.log(error.message);
     });
-
+}
 
 
 
@@ -33,11 +41,11 @@ function  acessandoDetalhesDoPokemon(name, url){
     fetch(url)
         .then(validandoHTTPSStatus)
         .then((result) => {
-            createPokemonIntoDom(name, result.sprites.front_default, result.id)
+            inserindoPokemonsNoDom(name, result.sprites.front_default, result.id)
         })
 }
 
-function createPokemonIntoDom(name, image, id){
+function inserindoPokemonsNoDom(name, image, id){
     const pokemonItem = `<div class="pokemonItem">
                             <p class="idPokemon">${id}</p>
                             <img class="imgPokemon" src="${image}" width="100" alt="">
@@ -46,3 +54,24 @@ function createPokemonIntoDom(name, image, id){
 
     $pokemonsList.innerHTML += pokemonItem;
 }
+
+function carregandoNovosPokemons(){
+    $imgSpinner.classList.add('spinnerActive');
+    
+    setTimeout(()=>{
+        $imgSpinner.classList.remove('spinnerActive');
+        page += 10;
+        trazendoListagemPokemonAPi()
+    }, 3000)
+}
+
+function calculandoFimDaPagina(){
+    window.addEventListener('scroll', () =>{
+        const {clientHeight, scrollHeight, scrollTop} = document.documentElement
+        if(scrollTop + clientHeight == scrollHeight){
+            carregandoNovosPokemons();
+        }
+    })
+}
+
+iniciar();
